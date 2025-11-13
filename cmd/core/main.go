@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/nielchaudhary/compass/internal/config"
 )
 
 func main() {
@@ -15,7 +17,10 @@ func listen(addr string) {
 		fmt.Fprintf(w, "compass server live on 8090!")
 	})
 
+	env := config.GetEnv("APP_ENV", "development")
+	fmt.Println("Running in", env, "mode")
 	log.Printf("compass server live on %s", addr)
+
 	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Fatal(err)
 	}
