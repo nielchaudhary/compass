@@ -18,7 +18,9 @@ func listen(addr string) {
 	})
 
 	env := config.GetEnv("APP_ENV", "development")
-	fmt.Println("Running in", env, "mode")
+
+	log.Println("SERVER ENVIRONMENT:", env)
+
 	log.Printf("compass server live on %s", addr)
 
 	if err := http.ListenAndServe(addr, nil); err != nil {
