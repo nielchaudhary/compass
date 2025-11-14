@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/nielchaudhary/compass/internal/config"
+	constants "github.com/nielchaudhary/compass/pkg/constants"
 )
 
 func main() {
@@ -17,8 +18,7 @@ func listen(addr string) {
 		fmt.Fprintf(w, "compass server live on 8090!")
 	})
 
-	env := config.GetEnv("APP_ENV", "development")
-
+	env := config.GetEnv("APP_ENV", string(constants.Development))
 	log.Println("SERVER ENVIRONMENT:", env)
 
 	log.Printf("compass server live on %s", addr)

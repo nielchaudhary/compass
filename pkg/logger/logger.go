@@ -1,9 +1,14 @@
 package logger
 
+import (
+	"fmt"
+)
+
 // InitLogger initializes and returns a zap logger instance.
 // It accepts the environment (env) as a parameter and returns a Logger.
-func InitLogger(env string) string {
+func InitLogger(env string, fileName string) string {
 
-	return "hello"
+	fmt.Println("Initialising Logger with environemnt : ", env)
+	return "test"
 
 }
