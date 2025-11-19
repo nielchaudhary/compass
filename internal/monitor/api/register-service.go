@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	types "github.com/nielchaudhary/compass/internal/monitor/types"
 	storage "github.com/nielchaudhary/compass/internal/storage"
 	logger "github.com/nielchaudhary/compass/pkg/logger"
@@ -58,6 +59,7 @@ func RegisterServiceEndpoints(c *fiber.Ctx) error {
 	req.Method = types.RequestMethod(method)
 
 	_, err = endpointsColl.InsertOne(c.Context(), bson.M{
+		"serviceId":   uuid.New(),
 		"endpoint":    req.Endpoint,
 		"serviceName": req.ServiceName,
 		"method":      req.Method,
