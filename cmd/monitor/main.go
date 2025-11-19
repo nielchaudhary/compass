@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/nielchaudhary/compass/internal/config"
+	monitor "github.com/nielchaudhary/compass/internal/monitor/router"
 	constants "github.com/nielchaudhary/compass/pkg/constants"
 	logger "github.com/nielchaudhary/compass/pkg/logger"
 	zap "go.uber.org/zap"
@@ -16,6 +17,8 @@ var log *zap.SugaredLogger
 func main() {
 
 	monitorServer := fiber.New()
+
+	monitor.InitMonitorRouter()
 
 	env := config.GetEnv("APP_ENV", string(constants.Development))
 	monitorPort := config.GetEnv("MONITOR_PORT", "8080")

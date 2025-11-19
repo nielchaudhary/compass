@@ -1,6 +1,7 @@
 package monitor
 
 import (
+	"slices"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -28,14 +29,8 @@ func RegisterServiceEndpoints(c *fiber.Ctx) error {
 
 	// Validate HTTP method
 	validMethods := []string{"GET", "POST", "PUT", "PATCH", "DELETE"}
-	method := strings.ToUpper(req.Method)
-	isValidMethod := false
-	for _, validMethod := range validMethods {
-		if method == validMethod {
-			isValidMethod = true
-			break
-		}
-	}
+	method := strings.ToUpper(string(req.Method))
+	isValidMethod := slices.Contains(validMethods, method)
 
 	if !isValidMethod {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -45,7 +40,7 @@ func RegisterServiceEndpoints(c *fiber.Ctx) error {
 		})
 	}
 
-	req.Method = method
+	req.Method = types.RequestMethod(method)
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"success": true,
