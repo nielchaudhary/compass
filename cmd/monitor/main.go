@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/nielchaudhary/compass/internal/config"
 	monitor "github.com/nielchaudhary/compass/internal/monitor/router"
+	storage "github.com/nielchaudhary/compass/internal/storage"
 	constants "github.com/nielchaudhary/compass/pkg/constants"
 	logger "github.com/nielchaudhary/compass/pkg/logger"
 	zap "go.uber.org/zap"
@@ -15,6 +16,8 @@ import (
 var log *zap.SugaredLogger
 
 func main() {
+
+	storage.ConnectMongoDB()
 
 	monitorServer := fiber.New()
 
