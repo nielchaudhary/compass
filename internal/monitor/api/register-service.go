@@ -7,7 +7,7 @@ import (
 	types "github.com/nielchaudhary/compass/internal/monitor/types"
 )
 
-func RegisterHealthEndpoint(c *fiber.Ctx) error {
+func RegisterServiceEndpoints(c *fiber.Ctx) error {
 	var req types.RegisterHealthRequestBody
 
 	if err := c.BodyParser(&req); err != nil {
