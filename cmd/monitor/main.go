@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/nielchaudhary/compass/internal/config"
 	constants "github.com/nielchaudhary/compass/pkg/constants"
 	logger "github.com/nielchaudhary/compass/pkg/logger"
@@ -14,6 +14,9 @@ import (
 var log *zap.SugaredLogger
 
 func main() {
+
+	monitorServer := fiber.New()
+
 	env := config.GetEnv("APP_ENV", string(constants.Development))
 	monitorPort := config.GetEnv("MONITOR_PORT", "8080")
 
@@ -35,10 +38,9 @@ func main() {
 		"port", monitorPort,
 	)
 
-	if err := http.ListenAndServe(":"+monitorPort, nil); err != nil {
+	if err := monitorServer.Listen(":" + monitorPort); err != nil {
 		log.Fatalw("Server failed", "error", err)
 		os.Exit(1)
-
 	}
 
 }

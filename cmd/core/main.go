@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/nielchaudhary/compass/internal/config"
 	constants "github.com/nielchaudhary/compass/pkg/constants"
 	logger "github.com/nielchaudhary/compass/pkg/logger"
@@ -14,6 +14,8 @@ import (
 var log *zap.SugaredLogger
 
 func main() {
+
+	coreServer := fiber.New()
 	env := config.GetEnv("APP_ENV", string(constants.Development))
 	serverPort := config.GetEnv("PORT", "8090")
 
@@ -35,8 +37,8 @@ func main() {
 		"port", serverPort,
 	)
 
-	if err := http.ListenAndServe(":"+serverPort, nil); err != nil {
-		log.Fatalw("Server failed", "error", err)
+	if err := coreServer.Listen(":" + serverPort); err != nil {
+		log.Fatalw("CORE SERVER BOOTUP FAILED", "error", err)
 		os.Exit(1)
 
 	}
