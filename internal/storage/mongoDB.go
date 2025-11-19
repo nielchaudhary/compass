@@ -15,10 +15,12 @@ import (
 var (
 	mongoClient *mongo.Client
 	log         *zap.SugaredLogger
+	dbName      string
 )
 
 func init() {
 	log = logger.GetLogger("internal/storage/mongoDB")
+	dbName = "compassDB"
 }
 
 func ConnectMongoDB() {
@@ -52,11 +54,20 @@ func ConnectMongoDB() {
 	log.Info("Pinged your deployment. You successfully connected to MongoDB!")
 }
 
-func GetDatabase(dbName string) *mongo.Database {
+func GetDatabase() *mongo.Database {
 	if mongoClient == nil {
 		log.Info("MongoDB client is not initialized. Please call ConnectMongoDB first.")
 
 	}
 	ConnectMongoDB()
 	return mongoClient.Database(dbName)
+}
+
+func GetCollection(collectionName string) (*mongo.Collection, error) {
+	if mongoClient == nil {
+		log.Info("MongoDB client is not initialized. Please call ConnectMongoDB first.")
+		ConnectMongoDB()
+
+	}
+	return mongoClient.Database(dbName).Collection(collectionName), nil
 }

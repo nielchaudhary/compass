@@ -11,7 +11,6 @@ const (
 )
 
 type RegisterHealthRequestBody struct {
-	ID          string        `json:"id"`
 	Endpoint    string        `json:"endpoint"`
 	Method      RequestMethod `json:"method"` //POST, GET, PUT, PATCH, DELETE
 	ServiceName string        `json:"serviceName"`

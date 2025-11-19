@@ -6,10 +6,25 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	types "github.com/nielchaudhary/compass/internal/monitor/types"
+	storage "github.com/nielchaudhary/compass/internal/storage"
+	logger "github.com/nielchaudhary/compass/pkg/logger"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.uber.org/zap"
 )
 
 func RegisterServiceEndpoints(c *fiber.Ctx) error {
-	var req types.RegisterHealthRequestBody
+	var (
+		req    types.RegisterHealthRequestBody
+		zapLog *zap.SugaredLogger
+	)
+
+	zapLog = logger.GetLogger("register-service")
+
+	endpointsColl, err := storage.GetCollection("endpoints")
+	if err != nil {
+		zapLog.Fatal("Error getting endpoints collection, please check", err)
+
+	}
 
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -19,7 +34,7 @@ func RegisterServiceEndpoints(c *fiber.Ctx) error {
 		})
 	}
 
-	if req.ID == "" || req.Endpoint == "" || req.ServiceName == "" {
+	if req.Endpoint == "" || req.ServiceName == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
 			"message": "ID, Endpoint & ServiceName are required fields",
@@ -41,6 +56,19 @@ func RegisterServiceEndpoints(c *fiber.Ctx) error {
 	}
 
 	req.Method = types.RequestMethod(method)
+
+	_, err = endpointsColl.InsertOne(c.Context(), bson.M{
+		"endpoint":    req.Endpoint,
+		"serviceName": req.ServiceName,
+		"method":      req.Method,
+	})
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "Failed to insert endpoint in MongoDB due to: " + err.Error(),
+			"data":    nil,
+		})
+	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"success": true,
