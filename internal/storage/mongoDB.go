@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	logger "github.com/nielchaudhary/compass/pkg/logger"
@@ -28,6 +29,9 @@ func ConnectMongoDB() {
 		log.Warn("Warning: .env file not found or could not be loaded")
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	var mongoURI string
 	if mongoURI = os.Getenv("mongoURI"); mongoURI == "" {
 		log.Fatal("You must set your 'mongoURI' environment variable.")
@@ -42,7 +46,7 @@ func ConnectMongoDB() {
 
 	var err error
 
-	mongoClient, err = (mongo.Connect(context.Background(), opts))
+	mongoClient, err = (mongo.Connect(ctx, opts))
 	if err != nil {
 		log.Fatal("Error connecting to MongoDB:", err)
 	}
