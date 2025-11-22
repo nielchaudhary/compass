@@ -41,14 +41,15 @@ func ConnectMongoDB() {
 		SetServerAPIOptions(serverAPI)
 
 	var err error
-	mongoClient, err = mongo.Connect(context.TODO(), opts)
+
+	mongoClient, err = (mongo.Connect(context.Background(), opts))
 	if err != nil {
 		log.Fatal("Error connecting to MongoDB:", err)
 	}
 
 	// Ping to verify connection
 	var result bson.M
-	if err := mongoClient.Database("admin").RunCommand(context.TODO(), bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
+	if err := mongoClient.Database("admin").RunCommand(context.Background(), bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
 		log.Fatal("Could not ping MongoDB:", err)
 	}
 	log.Info("Pinged your deployment. You successfully connected to MongoDB!")
