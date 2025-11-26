@@ -56,7 +56,7 @@ func ConnectMongoDB() {
 	if err := mongoClient.Database("admin").RunCommand(context.Background(), bson.D{{Key: "ping", Value: 1}}).Decode(&result); err != nil {
 		log.Fatal("Could not ping MongoDB:", err)
 	}
-	log.Info("Pinged your deployment. You successfully connected to MongoDB!")
+	log.Info("Pinged MongoDB deployment, connected to DB!")
 }
 
 func GetDatabase() *mongo.Database {
