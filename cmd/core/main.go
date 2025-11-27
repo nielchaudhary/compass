@@ -25,7 +25,7 @@ func main() {
 
 	coreServer := fiber.New()
 	env := config.GetEnv("APP_ENV", string(constants.Development))
-	serverPort := config.GetEnv("PORT", "8090")
+	coreServerPort := config.GetEnv("PORT", "8090")
 
 	storage.ConnectMongoDB()
 
@@ -44,10 +44,10 @@ func main() {
 	zapLog.Infow("STARTING SERVER",
 		"server", "compass-core",
 		"environment", env,
-		"port", serverPort,
+		"port", coreServerPort,
 	)
 
-	if err := coreServer.Listen(":" + serverPort); err != nil {
+	if err := coreServer.Listen(":" + coreServerPort); err != nil {
 		zapLog.Fatalw("CORE SERVER BOOTUP FAILED", "error", err)
 		os.Exit(1)
 

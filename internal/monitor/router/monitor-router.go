@@ -26,9 +26,9 @@ func InitMonitorRouter() {
 	})
 	monitorRouter.Get("/compass/v1/register-endpoint", monitor.RegisterServiceEndpoints)
 
-	port := ":8080"
-	log.Infow("COMPASS MONITOR API SERVER V1 STARTING ON PORT", "port", port)
-	err := monitorRouter.Listen(port)
+	monitorServerPort := ":8080"
+	log.Infow("COMPASS MONITOR API SERVER V1 STARTING ON PORT 8080")
+	err := monitorRouter.Listen(monitorServerPort)
 	if err != nil {
 		log.Fatalw("COMPASS MONITOR API SERVER V1 CRASHED: FAILED TO START SERVER", "error", err)
 	}
