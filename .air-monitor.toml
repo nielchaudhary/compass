@@ -1,0 +1,10 @@
+[build]
+  exclude_dir = [
+    "web",
+    "tmp",
+    "cmd/core",
+    "internal/core",
+  ]
+
+  cmd = "go build -o ./tmp/monitor-server ./cmd/monitor"
+  bin = "./tmp/monitor-server"
