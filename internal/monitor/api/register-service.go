@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	types "github.com/nielchaudhary/compass/internal/monitor/types"
 	storage "github.com/nielchaudhary/compass/internal/storage"
+	"github.com/nielchaudhary/compass/pkg/constants"
 	logger "github.com/nielchaudhary/compass/pkg/logger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.uber.org/zap"
@@ -44,9 +45,8 @@ func RegisterServiceEndpoints(c *fiber.Ctx) error {
 	}
 
 	// Validate HTTP method
-	validMethods := []string{"GET", "POST", "PUT", "PATCH", "DELETE"}
 	method := strings.ToUpper(string(req.Method))
-	isValidMethod := slices.Contains(validMethods, method)
+	isValidMethod := slices.Contains(constants.ValidHttpMethods, method)
 
 	if !isValidMethod {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
