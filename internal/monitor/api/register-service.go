@@ -38,7 +38,7 @@ func RegisterServiceEndpoints(c *fiber.Ctx) error {
 	if req.Endpoint == "" || req.ServiceName == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"message": "ID, Endpoint & ServiceName are required fields",
+			"message": "ID, Endpoint & ServiceName are requiredd fields",
 			"data":    nil,
 		})
 	}
