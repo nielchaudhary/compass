@@ -15,7 +15,7 @@ type pingEndpointResp struct {
 
 func PingEndpoint(endpoint string, method string) (pingEndpointResp, error) {
 	log := logger.GetLogger("services/ping-service.go")
-	log.Info("Pinging the following endpoint: ", endpoint, " with Method: ", method)
+	log.Info("Pinging endpoint ", "endpoint", endpoint, "method", method)
 
 	request, newRequestError := http.NewRequest(method, endpoint, nil)
 	if newRequestError != nil {
@@ -25,11 +25,13 @@ func PingEndpoint(endpoint string, method string) (pingEndpointResp, error) {
 			ServiceStatus: "Error",
 			RespStatus:    http.StatusBadRequest,
 		}
+
 		return errorResp, newRequestError
 	}
 	request.Header.Set("Content-Type", "application/json")
 
 	resp, sendRequestError := http.DefaultClient.Do(request)
+
 	if sendRequestError != nil {
 		log.Error("Error while sending the request through default client: ", sendRequestError)
 		errorResp := pingEndpointResp{
@@ -37,8 +39,10 @@ func PingEndpoint(endpoint string, method string) (pingEndpointResp, error) {
 			ServiceStatus: "Error",
 			RespStatus:    http.StatusBadGateway,
 		}
+
 		return errorResp, sendRequestError
 	}
+
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
