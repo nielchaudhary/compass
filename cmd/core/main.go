@@ -39,7 +39,7 @@ func main() {
 		}
 	}()
 
-	zapLog = logger.GetLogger("cmd/core/main.go")
+	zapLog = logger.GetLogger()
 
 	zapLog.Infow("STARTING SERVER",
 		"server", "compass-core",

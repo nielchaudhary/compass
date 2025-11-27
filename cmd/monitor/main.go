@@ -36,7 +36,7 @@ func main() {
 		}
 	}()
 
-	log = logger.GetLogger("cmd/monitor/main.go")
+	log = logger.GetLogger()
 
 	log.Infow("STARTING SERVER",
 		"server", "compass-monitor",

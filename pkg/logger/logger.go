@@ -82,11 +82,11 @@ func InitLogger(env string) error {
 	return nil
 }
 
-func GetLogger(fileName string) *zap.SugaredLogger {
+func GetLogger() *zap.SugaredLogger {
 	if sugarLogger == nil {
 		_ = InitLogger(string(constants.Development))
 	}
-	return sugarLogger.With("file", fileName)
+	return sugarLogger
 }
 
 func Sync() error {

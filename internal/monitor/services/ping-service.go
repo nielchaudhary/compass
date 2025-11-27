@@ -14,7 +14,7 @@ type pingEndpointResp struct {
 }
 
 func PingEndpoint(endpoint string, method string) (pingEndpointResp, error) {
-	log := logger.GetLogger("services/ping-service.go")
+	log := logger.GetLogger()
 	log.Info("Pinging endpoint ", "endpoint", endpoint, "method", method)
 
 	request, newRequestError := http.NewRequest(method, endpoint, nil)

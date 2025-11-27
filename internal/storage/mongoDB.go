@@ -20,7 +20,7 @@ var (
 )
 
 func init() {
-	log = logger.GetLogger("internal/storage/mongoDB")
+	log = logger.GetLogger()
 	dbName = "compassDB"
 }
 

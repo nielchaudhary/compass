@@ -10,7 +10,7 @@ import (
 )
 
 func InitMonitorRouter() {
-	log := logger.GetLogger("monitor/router")
+	log := logger.GetLogger()
 	if log == nil {
 		log.Panic("COMPASS LOGGER CRASHED: FAILED TO INITIALIZE LOGGER DUE TO: logger is nil")
 	}

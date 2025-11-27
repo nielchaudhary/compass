@@ -20,7 +20,7 @@ func RegisterServiceEndpoints(c *fiber.Ctx) error {
 		zapLog *zap.SugaredLogger
 	)
 
-	zapLog = logger.GetLogger("register-service")
+	zapLog = logger.GetLogger()
 
 	endpointsColl, err := storage.GetCollection("endpoints")
 	if err != nil {
