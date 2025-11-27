@@ -2,49 +2,78 @@ package logger
 
 import (
 	"log"
+	"os"
 
 	constants "github.com/nielchaudhary/compass/pkg/constants"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 var (
-	// globalLogger is the global logger instance used throughout the application
 	globalLogger *zap.Logger
-	// sugarLogger is a sugared logger for easier usage
-	sugarLogger *zap.SugaredLogger
+	sugarLogger  *zap.SugaredLogger
 )
 
-// InitLogger initializes the global zap logger instance based on the environment.
-// It accepts the environment (env) as a parameter and configures the logger accordingly.
+func customLevelEncoder(level zapcore.Level, enc zapcore.PrimitiveArrayEncoder) {
+	var colorCode string
+	switch level {
+	case zapcore.DebugLevel:
+		colorCode = "\033[36m" // Cyan
+	case zapcore.InfoLevel:
+		colorCode = "\033[32m" // Green
+	case zapcore.WarnLevel:
+		colorCode = "\033[33m" // Yellow
+	case zapcore.ErrorLevel:
+		colorCode = "\033[31m" // Red
+	case zapcore.DPanicLevel, zapcore.PanicLevel, zapcore.FatalLevel:
+		colorCode = "\033[35m" // Magenta
+	default:
+		colorCode = "\033[0m" // Reset
+	}
+	enc.AppendString(colorCode + level.CapitalString() + "\033[0m")
+}
+
+func newColoredDevelopmentLogger() (*zap.Logger, error) {
+	encoderConfig := zapcore.EncoderConfig{
+		TimeKey:        "time",
+		LevelKey:       "level",
+		NameKey:        "logger",
+		CallerKey:      "caller",
+		MessageKey:     "msg",
+		StacktraceKey:  "stacktrace",
+		LineEnding:     zapcore.DefaultLineEnding,
+		EncodeLevel:    customLevelEncoder,
+		EncodeTime:     zapcore.ISO8601TimeEncoder,
+		EncodeDuration: zapcore.StringDurationEncoder,
+		EncodeCaller:   zapcore.ShortCallerEncoder,
+	}
+
+	core := zapcore.NewCore(
+		zapcore.NewConsoleEncoder(encoderConfig),
+		zapcore.AddSync(os.Stdout),
+		zapcore.DebugLevel,
+	)
+
+	return zap.New(core, zap.AddCaller(), zap.AddStacktrace(zapcore.ErrorLevel)), nil
+}
+
 func InitLogger(env string) error {
 	var logger *zap.Logger
 	var err error
 
 	switch env {
-	case string(constants.Development):
-		logger, err = zap.NewDevelopment()
-		if err != nil {
-			log.Fatalf("Failed to initialize development logger: %v", err)
-			return err
-		}
+	case string(constants.Development), string(constants.Testing):
+		logger, err = newColoredDevelopmentLogger()
 	case string(constants.Production):
+		// Production typically goes to files/log aggregators, so no colors
 		logger, err = zap.NewProduction()
-		if err != nil {
-			log.Fatalf("Failed to initialize production logger: %v", err)
-			return err
-		}
-	case string(constants.Testing):
-		logger, err = zap.NewDevelopment()
-		if err != nil {
-			log.Fatalf("Failed to initialize testing logger: %v", err)
-			return err
-		}
 	default:
-		logger, err = zap.NewDevelopment()
-		if err != nil {
-			log.Fatalf("Failed to initialize default logger: %v", err)
-			return err
-		}
+		logger, err = newColoredDevelopmentLogger()
+	}
+
+	if err != nil {
+		log.Fatalf("Failed to initialize logger: %v", err)
+		return err
 	}
 
 	globalLogger = logger
@@ -55,16 +84,11 @@ func InitLogger(env string) error {
 
 func GetLogger(fileName string) *zap.SugaredLogger {
 	if sugarLogger == nil {
-		// If logger is not initialized, initialize with development settings
 		_ = InitLogger(string(constants.Development))
 	}
-
-	// Return a logger with the fileName field added
 	return sugarLogger.With("file", fileName)
 }
 
-// Sync flushes any buffered log entries.
-// Applications should call Sync before exiting.
 func Sync() error {
 	if globalLogger != nil {
 		return globalLogger.Sync()
