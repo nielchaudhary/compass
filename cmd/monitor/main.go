@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/nielchaudhary/compass/internal/config"
 	monitor "github.com/nielchaudhary/compass/internal/monitor/router"
+	monitorService "github.com/nielchaudhary/compass/internal/monitor/services"
 	storage "github.com/nielchaudhary/compass/internal/storage"
 	constants "github.com/nielchaudhary/compass/pkg/constants"
 	logger "github.com/nielchaudhary/compass/pkg/logger"
@@ -16,13 +17,6 @@ import (
 var log *zap.SugaredLogger
 
 func main() {
-
-	storage.ConnectMongoDB()
-
-	monitorServer := fiber.New()
-
-	monitor.InitMonitorRouter()
-
 	env := config.GetEnv("APP_ENV", string(constants.Development))
 	monitorPort := config.GetEnv("MONITOR_PORT", "8080")
 
@@ -37,6 +31,12 @@ func main() {
 	}()
 
 	log = logger.GetLogger()
+
+	storage.ConnectMongoDB()
+	monitorService.SchedulerCore()
+	monitor.InitMonitorRouter()
+
+	monitorServer := fiber.New()
 
 	log.Infow("STARTING SERVER",
 		"server", "compass-monitor",
