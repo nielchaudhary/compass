@@ -91,7 +91,19 @@ func GetLogger() *zap.SugaredLogger {
 
 func Sync() error {
 	if globalLogger != nil {
-		return globalLogger.Sync()
+		err := globalLogger.Sync()
+		// Ignore sync errors for stdout/stderr on terminal devices
+		// This is expected behavior - fsync doesn't work on TTY devices
+		if err != nil {
+			// Check for the specific "inappropriate ioctl for device" error
+			if osErr, ok := err.(*os.PathError); ok {
+				// Ignore sync errors for /dev/stdout and /dev/stderr
+				if osErr.Path == "/dev/stdout" || osErr.Path == "/dev/stderr" {
+					return nil
+				}
+			}
+		}
+		return err
 	}
 	return nil
 }

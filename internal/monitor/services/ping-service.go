@@ -10,7 +10,7 @@ import (
 type pingEndpointResp struct {
 	Message       string `json:"message"`
 	ServiceStatus string `json:"serviceStatus"`
-	RespStatus    int    `json:"respStatus"` // Fixed missing closing quote
+	RespStatus    int    `json:"respStatus"`
 }
 
 func PingEndpoint(endpoint string, method string) (pingEndpointResp, error) {
