@@ -25,7 +25,7 @@ func SchedulerCore() {
 		log.Fatal("Error Initialising the core scheduler", newSchedulerError)
 	}
 
-	repeatInterval := gocron.DurationJob(1 * time.Second)
+	repeatInterval := gocron.DurationJob(5 * time.Minute)
 	healthCheckTask := gocron.NewTask(func() {
 		_, err := PingEndpoint("http://localhost:3000/health", "GET")
 		if err != nil {
