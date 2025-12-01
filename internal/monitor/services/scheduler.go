@@ -35,7 +35,7 @@ func SchedulerCore() {
 
 	_, newJobError := scheduler.NewJob(repeatInterval, healthCheckTask)
 	if newJobError != nil {
-		log.Fatal("Error running the cron job ", newJobError)
+		logger.Error("Error running the cron job ", newJobError)
 	}
 
 	scheduler.Start()
