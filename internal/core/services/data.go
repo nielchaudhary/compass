@@ -2,8 +2,9 @@ package core
 
 import (
 	"context"
+	"time"
 
-	storage "github.com/nielchaudhary/compass/internal/storage"
+	"github.com/nielchaudhary/compass/internal/storage"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -17,21 +18,26 @@ func BatchData[T any](data []T, size int) []T {
 	return batch
 }
 
-func FetchDataFromDB(collectionName string, filter bson.M) ([]bson.M, error) {
+// contains all the db related functions that would be used in core engine
+func FetchEndpointsDataFromDB(collectionName string) ([]Endpoints, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	collection, err := storage.GetCollection(collectionName)
 	if err != nil {
 		return nil, err
 	}
 
-	cursor, err := collection.Find(context.TODO(), filter)
+	cursor, err := collection.Find(context.TODO(), bson.M{})
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.TODO())
+	defer cursor.Close(ctx)
 
-	var results []bson.M
+	var results []Endpoints
 	for cursor.Next(context.TODO()) {
-		var result bson.M
+		var result Endpoints
 		if err := cursor.Decode(&result); err != nil {
 			return nil, err
 		}
