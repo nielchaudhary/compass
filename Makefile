@@ -1,18 +1,18 @@
-.PHONY: run-core run-monitor core-dev monitor-dev build-core build-monitor clean-artifacts
+.PHONY: run-core-server run-monitor-server core-dev monitor-dev build-core build-monitor clean-artifacts
 
-run-core:
+run-core-server:
 	@echo "Running core server"
 	go run ./cmd/core/main.go
 
-run-monitor:
+run-monitor-server:
 	@echo "Running monitor server"
 	go run ./cmd/monitor/main.go
 
-core-dev:
+core-dev-server:
 	@echo "Running compass-core in dev mode with hot reload"
 	air -c .air-core.toml
 
-monitor-dev:
+monitor-dev-server:
 	@echo "Running compass-monitor in dev mode with hot reload"
 	air -c .air-monitor.toml
 

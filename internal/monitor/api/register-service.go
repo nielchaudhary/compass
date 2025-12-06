@@ -16,15 +16,15 @@ import (
 
 func RegisterServiceEndpoints(c *fiber.Ctx) error {
 	var (
-		req    types.RegisterHealthRequestBody
-		zapLog *zap.SugaredLogger
+		req types.RegisterHealthRequestBody
+		log *zap.SugaredLogger
 	)
 
-	zapLog = logger.GetLogger()
+	log = logger.GetLogger()
 
 	endpointsColl, err := storage.GetCollection("endpoints")
 	if err != nil {
-		zapLog.Fatal("Error getting endpoints collection, please check", err)
+		log.Fatal("Error getting endpoints collection, please check", err)
 
 	}
 
