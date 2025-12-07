@@ -1,4 +1,4 @@
-package monitor
+package scheduler
 
 import (
 	"fmt"
