@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/nielchaudhary/compass/internal/config"
 	monitor "github.com/nielchaudhary/compass/internal/monitor/router"
-	scheduler "github.com/nielchaudhary/compass/internal/monitor/scheduler"
+	scheduler "github.com/nielchaudhary/compass/internal/scheduler"
 	storage "github.com/nielchaudhary/compass/internal/storage"
 	constants "github.com/nielchaudhary/compass/pkg/constants"
 	logger "github.com/nielchaudhary/compass/pkg/logger"
